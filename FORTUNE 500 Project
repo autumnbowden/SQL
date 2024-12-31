@@ -1,0 +1,63 @@
+CREATE TABLE fortune_companies (
+    company_id INTEGER PRIMARY KEY,
+    company_name TEXT,
+    industry TEXT,
+    revenue REAL,
+    employees INTEGER,
+    healthcare_benefits BIT,
+    paid_time_off_days INTEGER,
+    maternity_leave_weeks INTEGER,
+    avg_employee_tenure REAL
+);
+
+INSERT INTO fortune_companies (company_name, industry, revenue, employees, healthcare_benefits, paid_time_off_days, maternity_leave_weeks, avg_employee_tenure)
+VALUES
+    ('Apple Inc.', 'Technology', 365.7, 147000, 1, 20, 12, 4.5),
+    ('Walmart Inc.', 'Retail', 523.96, 2200000, 1, 15, 8, 6.2),
+    ('Exxon Mobil Corporation', 'Energy', 265.01, 72000, 0, 18, 6, 7.8),
+    ('Amazon.com Inc.', 'Technology', 386.06, 1370000, 1, 22, 14, 5.1),
+    ('JPMorgan Chase & Co.', 'Financials', 160.1, 255998, 1, 21, 12, 6.9),
+
+PROJECT 2
+-- get a quick view of what information the database contains
+SELECT*
+FROM fortune_companies;
+
+-- Use logical operators like AND to filter the data
+--Employee is newly married and wants to see what companies have 8 weeks of maternity leave AND healthcare benefits?
+Select company_name
+FROM fortune_companies
+WHERE maternity_leave_weeks>=8
+AND healthcare_benefits=1;
+
+-- Use an aggregate function like AVG, SUM, COUNT, MAX, and/or MIN to return summary statistics about the data.
+-- What company in the Technology industry has the highest paid revenue and what is their revenue?
+SELECT company_name, MAX(revenue)
+FROM fortune_companies
+WHERE industry = "Technology";
+
+--CASE STATEMENT CHALLENGE--
+-- Assign all the companies in the Healthcare industry as "mother friendly workplace", "acceptable", or "abysmal" based on the maternity leave offered.
+SELECT 
+company_name,
+CASE 
+ WHEN maternity_leave_weeks >=10 THEN 'mother friendly workplace'
+ When maternity_leave_weeks >=8 THEN 'acceptable'
+ ELSE 'abysmal'
+END as mother_friendly 
+FROM fortune_companies
+WHERE industry= "Healthcare"
+;
+-- Use HAVING clause to determine something interesting about the data per category
+-- Select all companies that have atleast 1500 employees
+SELECT company_name, AVG(employees)
+FROM fortune_companies
+GROUP BY employees
+HAVING employees>=1500;
+
+--Which industries have an average revenue of at least $200 Billion, and what are their avg revenues?
+SELECT industry, ROUND(avg(revenue),1) AS avg_revenue_billions
+FROM fortune_companies
+GROUP BY industry
+HAVING avg_revenue_billions>=200
+;
